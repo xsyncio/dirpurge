@@ -12,18 +12,19 @@ Whether you're a developer managing multiple projects or an administrator handli
 
 ---
 
-## Installation and uninstallation
-✅ **Install**
-  - A single command to install it globally.
-  - Use it in a powershell with admin privileges.
+## Installation & Uninstallation
+
+✅ **Installation**  
+- Run a single command to install `dirpurge` globally.  
+- Execute the command in **PowerShell with administrative privileges**.  
 
 ```powershell
 Invoke-RestMethod -Uri ((Invoke-RestMethod -Uri 'https://api.github.com/repos/xsyncio/dirpurge/releases/latest').assets | Where-Object name -like '*dirpurge.exe*').browser_download_url -OutFile 'C:\Program Files\dirpurge\dirpurge.exe'; if (!(Test-Path 'C:\Program Files\dirpurge')) { New-Item -Path 'C:\Program Files\dirpurge' -ItemType Directory }; Set-Content -Path 'C:\Program Files\dirpurge\dirpurge.bat' -Value '@echo off`r`nC:\Program Files\dirpurge\dirpurge.exe %*'; [System.Environment]::SetEnvironmentVariable('Path', $([System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine) + ';C:\Program Files\dirpurge'), [System.EnvironmentVariableTarget]::Machine)
 ```
 
-🚫 **Uninstall**
-  - A single command to reverse everything and uninstall dirpurge.
-  - Again, use it in a admin privillaged powershell.
+🚫 **Uninstallation**  
+- Run a single command to **completely remove `dirpurge`** and its associated files.  
+- Execute the command in **PowerShell with administrative privileges**.  
 
 ```powershell
 Remove-Item -Path 'C:\Program Files\dirpurge' -Recurse -Force -ErrorAction SilentlyContinue; [System.Environment]::SetEnvironmentVariable('Path', ($([System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine) -replace ';?C:\\Program Files\\dirpurge', '')), [System.EnvironmentVariableTarget]::Machine)
