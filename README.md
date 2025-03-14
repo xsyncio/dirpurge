@@ -1,5 +1,7 @@
 # 🧹 dirpurge
 
+![image](https://github.com/user-attachments/assets/07565521-3090-4c6f-95d6-08c3ae418eab)
+
 **Advanced Directory Cleanup Tool with Safety Features**
 
 ---
