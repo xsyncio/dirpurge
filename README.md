@@ -21,7 +21,30 @@ Whether you're a developer managing multiple projects or an administrator handli
 - Execute the command in **PowerShell with administrative privileges**.  
 
 ```powershell
-Invoke-RestMethod -Uri ((Invoke-RestMethod -Uri 'https://api.github.com/repos/xsyncio/dirpurge/releases/latest').assets | Where-Object name -like '*dirpurge.exe*').browser_download_url -OutFile 'C:\Program Files\dirpurge\dirpurge.exe'; if (!(Test-Path 'C:\Program Files\dirpurge')) { New-Item -Path 'C:\Program Files\dirpurge' -ItemType Directory }; Set-Content -Path 'C:\Program Files\dirpurge\dirpurge.bat' -Value '@echo off`r`nC:\Program Files\dirpurge\dirpurge.exe %*'; [System.Environment]::SetEnvironmentVariable('Path', $([System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine) + ';C:\Program Files\dirpurge'), [System.EnvironmentVariableTarget]::Machine)
+$downloadUrl = (Invoke-RestMethod -Uri 'https://api.github.com/repos/xsyncio/dirpurge/releases/latest').assets | Where-Object name -like '*dirpurge.exe*' | Select-Object -ExpandProperty browser_download_url
+
+if ($downloadUrl) {
+    $installPath = 'C:\Program Files\dirpurge'
+    $exePath = "$installPath\dirpurge.exe"
+    $batPath = "$installPath\dirpurge.bat"
+
+    if (!(Test-Path $installPath)) { 
+        New-Item -Path $installPath -ItemType Directory -Force 
+    }
+
+    Invoke-RestMethod -Uri $downloadUrl -OutFile $exePath
+
+    Set-Content -Path $batPath -Value "@echo off`r`n`"$exePath`" %*"
+
+    $envPath = [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine)
+    if ($envPath -notlike "*$installPath*") {
+        [System.Environment]::SetEnvironmentVariable('Path', "$envPath;$installPath", [System.EnvironmentVariableTarget]::Machine)
+    }
+
+    Write-Host "✅ dirpurge installed successfully! Restart your terminal to apply changes."
+} else {
+    Write-Host "❌ Failed to retrieve the download URL. Check the GitHub API response."
+}
 ```
 
 🚫 **Uninstallation**  
